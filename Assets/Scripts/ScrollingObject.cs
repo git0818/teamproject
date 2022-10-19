@@ -5,6 +5,7 @@ using UnityEngine;
 public class ScrollingObject : MonoBehaviour
 {
     public float speed = 10f;
+    public float distance = 4f;
     private float width;
 
     void Awake()
@@ -27,7 +28,7 @@ public class ScrollingObject : MonoBehaviour
     void Reposition()
     {
         Debug.Log(width);
-        Vector2 offset = new Vector2(width * 4f, 0);
+        Vector2 offset = new Vector2(width * distance, 0);
         transform.position = (Vector2)transform.position + offset;
     }
 }
