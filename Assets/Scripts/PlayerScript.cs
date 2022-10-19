@@ -19,8 +19,8 @@ public class PlayerScript : MonoBehaviourPunCallbacks, IPunObservable
     private PhotonView PV;
     [SerializeField]
     private TextMeshProUGUI NicknameText;
-    [SerializeField]
-    private Image HealthImage;
+    /*[SerializeField]
+    private Image HealthImage;*/
 
     private GameObject JumpGO;
     private Button JumpBtn;
@@ -54,7 +54,7 @@ public class PlayerScript : MonoBehaviourPunCallbacks, IPunObservable
             if (PV.IsMine)
             {
                 Debug.DrawRay(transform.position, new Vector3(0, -1f, 0), new Color(0, 1, 0));
-                RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 1.1f, LayerMask.GetMask("Ground"));
+                RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 1.3f, LayerMask.GetMask("Ground"));
                 if (hit.collider == null)
                 {
                     isGround = false;
@@ -90,12 +90,12 @@ public class PlayerScript : MonoBehaviourPunCallbacks, IPunObservable
         if(stream.IsWriting)
         {
             stream.SendNext(transform.position);
-            stream.SendNext(HealthImage.fillAmount);
+            //stream.SendNext(HealthImage.fillAmount);
         }
         else
         {
             curPos = (Vector3)stream.ReceiveNext();
-            HealthImage.fillAmount = (float)stream.ReceiveNext();
+            //HealthImage.fillAmount = (float)stream.ReceiveNext();
         }
     }
 }

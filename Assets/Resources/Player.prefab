@@ -447,7 +447,6 @@ MonoBehaviour:
   SR: {fileID: 297015408870367657}
   PV: {fileID: 297015408870367661}
   NicknameText: {fileID: 297015408646938778}
-  HealthImage: {fileID: 297015409561297650}
 --- !u!70 &5434769405515259555
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

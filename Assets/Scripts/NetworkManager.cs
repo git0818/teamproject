@@ -10,6 +10,14 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 {
     public static NetworkManager instance;
 
+    //캐릭터 배열/ selectedNum을 받아와서 선택된 캐릭터를 뽑음
+    [SerializeField]
+    private GameObject[] characterList;
+
+    //캐릭터 선택창, 접속되면 사라질 예정
+    [SerializeField]
+    private GameObject characterSelectionWindow;
+
     [SerializeField]
     private TMP_InputField NicknameInput;
     [SerializeField]
@@ -37,6 +45,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     //처음에 대기하는거
     public static bool gamestartcheck = false;
+    
+    private int selectedCharacterNum; //선택창에서 최종 선택된 캐릭터
 
     void Awake()
     {
@@ -45,9 +55,10 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         else
             Destroy(gameObject);
 
-            Screen.SetResolution(960, 540, false);
+        Screen.SetResolution(960, 540, false);
         PhotonNetwork.SendRate = 60;
         PhotonNetwork.SerializationRate = 30;
+        
     }
 
     public void Connect() => PhotonNetwork.ConnectUsingSettings();
@@ -63,10 +74,11 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     {
         Localcamera.rect = new Rect(0, 0.5f, 1, 0.5f);
         Remotecamera.gameObject.SetActive(true);
-        DisconnectPanel.SetActive(false);
+        DisconnectPanel.SetActive(false);                
         Spawn();
         if (PhotonNetwork.CurrentRoom.PlayerCount == 2)
             PV.RPC("GameStart", RpcTarget.All);
+        characterSelectionWindow.SetActive(false); //캐릭터 선택을 위한 목록 비활성화
     }
 
     void Update()
@@ -107,18 +119,43 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     }
     public void Spawn()
     {
+        //선택된 캐릭터를 받아서 게임 시작시 생성시킴
+        selectedCharacterNum = GameObject.Find("Characters").GetComponent<CharacterSelection>().selectedCharacter;
+        //GameObject ChosenPlayer = characterList[selectedCharacterNum];
+        string chosenPlayer;
+        /*switch (selectedCharacterNum)
+        {
+            case 0:
+                chosenPlayer = characterList[0].name;
+                break;
+            case 1:
+                chosenPlayer = characterList[1].name;
+                break;
+            case 2:
+                chosenPlayer = characterList[2].name;
+                break;
+            case 3:
+                chosenPlayer = characterList[3].name;
+                break;
+        }*/
+        if(selectedCharacterNum == 0) chosenPlayer = characterList[0].name;
+        else if(selectedCharacterNum == 1) chosenPlayer = characterList[1].name;
+        else if (selectedCharacterNum == 2) chosenPlayer = characterList[2].name;
+        else chosenPlayer = characterList[3].name;
+
         //Resources 폴더 안에 있는 프리팹의 이름
         if (PhotonNetwork.IsMasterClient)
         {
             LocalUI.SetActive(true);
             RemoteUI.SetActive(false);
-            PhotonNetwork.Instantiate("Player", LocalSpwanPos.position, Quaternion.identity);
+            //PhotonNetwork.Instantiate("Player", LocalSpwanPos.position, Quaternion.identity);
+            PhotonNetwork.Instantiate(chosenPlayer, LocalSpwanPos.position, Quaternion.identity);
         }
         else
         {
             LocalUI.SetActive(false);
             RemoteUI.SetActive(true);
-            PhotonNetwork.Instantiate("Player", RemoteSpwanPos.position, Quaternion.identity);
+            PhotonNetwork.Instantiate(chosenPlayer, RemoteSpwanPos.position, Quaternion.identity);
         }
         RespawnPanel.SetActive(false);
     }
