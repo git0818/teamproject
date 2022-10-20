@@ -42,3 +42,6 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: forward
+    uniqueID: 3705885537
+    locked: 0
